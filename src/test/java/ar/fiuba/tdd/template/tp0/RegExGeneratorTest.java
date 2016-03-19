@@ -6,9 +6,15 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static ar.fiuba.tdd.template.tp0.Constants.*;
+
 import static org.junit.Assert.assertTrue;
 
 public class RegExGeneratorTest {
+
+    private boolean validate(String regEx, int numberOfResults) throws InvalidRegExException {
+        return validate(regEx, numberOfResults, DEFAULT_RESULTS);
+    }
 
     private boolean validate(String regEx, int numberOfResults, int maxLength) throws InvalidRegExException {
         RegExGenerator generator = new RegExGenerator(maxLength);
@@ -26,22 +32,34 @@ public class RegExGeneratorTest {
     }
 
     //TODO: Uncomment these tests
-    /*
+
     @Test
     public void testAnyCharacter() {
-        assertTrue(validate(".", 1));
+        try {
+            assertTrue(validate(".", 1));
+        } catch (InvalidRegExException e) {
+            assertTrue(false);
+        }
     }
 
     @Test
     public void testMultipleCharacters() {
-        assertTrue(validate("...", 1));
+        try {
+            assertTrue(validate("...", 1));
+        } catch (InvalidRegExException e) {
+            assertTrue(false);
+        }
     }
 
     @Test
     public void testLiteral() {
-        assertTrue(validate("\\@", 1));
+        try {
+            assertTrue(validate("\\@", 1));
+        } catch (InvalidRegExException e) {
+            assertTrue(false);
+        }
     }
-
+/*
     @Test
     public void testLiteralDotCharacter() {
         assertTrue(validate("\\@..", 1));
@@ -63,4 +81,13 @@ public class RegExGeneratorTest {
     }
     */
     // TODO: Add more tests!!!
+
+//    @Test
+//    public void testGeneral() {
+//        try {
+//            assertTrue(validate("ab*.+\\h\\+[cde]?.[fg]", 3));
+//        } catch (InvalidRegExException e) {
+//            assertTrue(false);
+//        }
+//    }
 }

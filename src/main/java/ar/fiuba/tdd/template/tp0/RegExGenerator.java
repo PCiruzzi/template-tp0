@@ -13,6 +13,11 @@ public class RegExGenerator {
 
     public List<String> generate(String regEx, int numberOfResults) throws InvalidRegExException {
         Queue<String> parsed = new RegExParser().parse(regEx);
+        for (String parseado : parsed) { //TODO: Clean
+            System.out.println("Parseado: " + parseado);
+        }
+
+
         List<String> results = new ArrayList<>();
         int index = 0;
         while (index < numberOfResults) {
@@ -20,6 +25,8 @@ public class RegExGenerator {
             if (! results.contains(result) && results.add(result) ) {
                 index++;
             }
+            //TODO: If it repeats n times, it means that there are no much possibilities
+            System.out.println("Resultado: " + result);
         }
         return results;
     }
