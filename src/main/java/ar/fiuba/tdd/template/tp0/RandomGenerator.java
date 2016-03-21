@@ -15,7 +15,7 @@ public class RandomGenerator {
         this.maxLength = maxLength;
     }
 
-    public String generate() {
+    public String generate() throws InvalidRegExException {
         String matcher = "";
         int fieldsCount = 0;
         for (String regExField : this.regEx) {
@@ -31,7 +31,7 @@ public class RandomGenerator {
         return matcher;
     }
 
-    private String generateRandomField(String regExField, int maxLength) {
+    private String generateRandomField(String regExField, int maxLength) throws InvalidRegExException {
         int amountOfRepetitions = amountOfRepetitions(regExField, maxLength);
         System.out.println("Amount of repetitions: " + amountOfRepetitions); //TODO: Clean
         char first = regExField.charAt(0);
@@ -48,9 +48,9 @@ public class RandomGenerator {
         return new StringBuilder().append(character).toString();
     }
 
-    private String generateRandomFieldSet(String regExField, int amountOfRepetitions) {
+    private String generateRandomFieldSet(String regExField, int amountOfRepetitions) throws InvalidRegExException {
         int quantifier = hasQuantifier(regExField) ? 2 : 1;
-        String dictionary = regExField.substring(1, regExField.length() - quantifier);
+        String dictionary = getSetDictionary(regExField, quantifier);
         String generated = "";
         for (int index = 0; index < amountOfRepetitions; index++) {
             char randomChar = dictionary.charAt(randomBetween(0, dictionary.length() - 1));
@@ -154,6 +154,14 @@ public class RandomGenerator {
         String set = regExField.substring(1, regExField.length() - quantifier);
         boolean isEscaped = false;
         String dictionary = "";
+        dictionary = makeDictionary(set, isEscaped, dictionary);
+        if (dictionary.length() == 0) {
+            throw new InvalidRegExException("The set is empty.");
+        }
+        return dictionary;
+    }
+
+    private String makeDictionary(String set, boolean isEscaped, String dictionary) throws InvalidRegExException {
         for (int index = 0; index < set.length(); index++) {
             char character = set.charAt(index);
             if (isQuantifier(character) && ! isEscaped) {
@@ -162,12 +170,10 @@ public class RandomGenerator {
             if (character == '\\') {
                 isEscaped = true;
             } else {
-                dictionary += character;
+                String toConcatenate = charToString(character);
+                dictionary = dictionary.concat(toConcatenate);
                 isEscaped = false;
             }
-        }
-        if (dictionary.length() == 0) {
-            throw new InvalidRegExException("The set is empty.");
         }
         return dictionary;
     }

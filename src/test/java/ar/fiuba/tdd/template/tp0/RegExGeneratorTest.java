@@ -227,33 +227,39 @@ public class RegExGeneratorTest {
         }
     }
 
-//    @Test
-//    public void testEmptySet() {
-//        try {
-//            assertTrue(validate("[]", 1));
-//        } catch (InvalidRegExException | InvalidAmountOfResultsException e) {
-//            assertTrue(false);
-//        }
-//    }
-//
-//    @Test
-//    public void testQuantifierUnescapedInSet() {
-//        try {
-//            assertTrue(validate("a[bc*]d", 1));
-//        } catch (InvalidRegExException | InvalidAmountOfResultsException e) {
-//            assertTrue(false);
-//        }
-//    }
-//
-//    @Test
-//    public void testEscapedCharactersInSet() {
-//        try {
-//            assertTrue(validate("a[bc\\*\\@]d", 1));
-//        } catch (InvalidRegExException | InvalidAmountOfResultsException e) {
-//            assertTrue(false);
-//        }
-//    }
-//
+    @Test
+    public void testEmptySet() {
+        try {
+            validate("[]", 1);
+            assertTrue(false); //In case an exception isn't thrown
+        } catch (InvalidRegExException e) {
+            assertTrue(true);
+        } catch (InvalidAmountOfResultsException e) {
+            assertTrue(false);
+        }
+    }
+
+    @Test
+    public void testQuantifierUnescapedInSet() {
+        try {
+            validate("a[bc*]d", 1);
+            assertTrue(false); //In case an exception isn't thrown
+        } catch (InvalidRegExException e) {
+            assertTrue(true);
+        } catch (InvalidAmountOfResultsException e) {
+            assertTrue(false);
+        }
+    }
+
+    @Test
+    public void testEscapedCharactersInSet() {
+        try {
+            assertTrue(validate("a[bc\\*\\@]d", 1));
+        } catch (InvalidRegExException | InvalidAmountOfResultsException e) {
+            assertTrue(false);
+        }
+    }
+
 //    @Test
 //    public void testClosedBracketWithoutBeingOpened() {
 //        try {

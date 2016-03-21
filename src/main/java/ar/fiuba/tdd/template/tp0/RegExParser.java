@@ -28,10 +28,7 @@ public class RegExParser {
         }
         return parsed;
     }
-    //TODO: Exception when there is a quantifier non-escaped inside a set
-    //TODO: Exception when there is a closing set square bracket, without being opened
-    //TODO: Exception when there is an empty set
-    //TODO: Allow escaped characters inside a set
+
     //This method doesn't allow that a '\]' is in the set
     private int readSet(Queue<String> parsed, String regEx, int index) throws InvalidRegExException {
         int indexOfSquareBracket = regEx.indexOf(CLOSE_SET, index);

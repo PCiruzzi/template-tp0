@@ -32,7 +32,7 @@ public class RegExGenerator {
         return results;
     }
 
-    private String generateRandom(Queue<String> regEx) {
+    private String generateRandom(Queue<String> regEx) throws InvalidRegExException {
         RandomGenerator generator = new RandomGenerator(regEx, this.maxLength);
         return generator.generate();
     }
