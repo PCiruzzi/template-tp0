@@ -88,7 +88,6 @@ public class RandomGenerator {
         String generated = "";
         for (int index = 0; index < amountOfRepetitions; index++) {
             int randomInt = randomBetween(MIN_LITERAL, MAX_LITERAL);
-            System.out.println("RandomInt: " + randomInt); //TODO: Clean
             // Excludes line feed and carriage return characters
             if (randomInt == 10 || randomInt == 13 || randomInt == 133) {
                 index--;
@@ -129,13 +128,16 @@ public class RandomGenerator {
         return last;
     }
 
+    private boolean isQuantifier(char character) {
+        return (character == ZERO_OR_ONE || character == ZERO_OR_MORE || character == ONE_OR_MORE);
+    }
+
     private boolean isQuantifierEscaped(String regExField) {
         if (regExField.length() == 1) {
             return false;
         }
         char escapedChar = regExField.charAt(1);
-        return (regExField.charAt(0) == ESCAPED
-                && (escapedChar == ZERO_OR_ONE || escapedChar == ZERO_OR_MORE || escapedChar == ONE_OR_MORE));
+        return (regExField.charAt(0) == ESCAPED && isQuantifier(escapedChar));
     }
 
     private boolean hasQuantifier(String regExField) {
@@ -146,5 +148,27 @@ public class RandomGenerator {
     private int randomBetween(int min, int max) {
         Random random = new Random();
         return (random.nextInt(max - min + 1) + min);
+    }
+
+    private String getSetDictionary(String regExField, int quantifier) throws InvalidRegExException {
+        String set = regExField.substring(1, regExField.length() - quantifier);
+        boolean isEscaped = false;
+        String dictionary = "";
+        for (int index = 0; index < set.length(); index++) {
+            char character = set.charAt(index);
+            if (isQuantifier(character) && ! isEscaped) {
+                throw new InvalidRegExException("The set includes a quantifier that isn't escaped.");
+            }
+            if (character == '\\') {
+                isEscaped = true;
+            } else {
+                dictionary += character;
+                isEscaped = false;
+            }
+        }
+        if (dictionary.length() == 0) {
+            throw new InvalidRegExException("The set is empty.");
+        }
+        return dictionary;
     }
 }

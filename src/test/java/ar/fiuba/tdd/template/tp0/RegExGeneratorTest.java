@@ -33,8 +33,6 @@ public class RegExGeneratorTest {
                     (item1, item2) -> item1 && item2);
     }
 
-    //TODO: Uncomment these tests
-
     @Test
     public void testAnyCharacter() {
         try {
@@ -99,18 +97,6 @@ public class RegExGeneratorTest {
     }
 
     @Test
-    public void testAmountException() {
-        try {
-            validate("a", 2);
-            assertTrue(false); //In case an exception isn't thrown
-        } catch (InvalidRegExException e) {
-            assertTrue(false);
-        } catch (InvalidAmountOfResultsException e) {
-            assertTrue(true);
-        }
-    }
-
-    @Test
     public void testEscapedQuantifier() {
         try {
             assertTrue(validate("\\+*.", 1));
@@ -124,18 +110,6 @@ public class RegExGeneratorTest {
         try {
             assertTrue(validate("\\+\\*.", 1));
         } catch (InvalidRegExException | InvalidAmountOfResultsException e) {
-            assertTrue(false);
-        }
-    }
-
-    @Test
-    public void testOpenSetWithoutCloseException() {
-        try {
-            validate("[abc.", 1);
-            assertTrue(false); //In case an exception isn't thrown
-        } catch (InvalidRegExException e) {
-            assertTrue(true);
-        } catch (InvalidAmountOfResultsException e) {
             assertTrue(false);
         }
     }
@@ -185,6 +159,74 @@ public class RegExGeneratorTest {
         }
     }
 
+    @Test
+    public void testOnlyEscapedQuantifier() {
+        try {
+            assertTrue(validate("\\?", 1));
+        } catch (InvalidRegExException | InvalidAmountOfResultsException e) {
+            assertTrue(false);
+        }
+    }
+
+    @Test
+    public void testIntegration() {
+        try {
+            assertTrue(validate("ab*.+\\[\\+\\*?[cde]+.[fg]", 3));
+        } catch (InvalidRegExException | InvalidAmountOfResultsException e) {
+            assertTrue(false);
+        }
+    }
+
+    // Exceptions tests
+
+    @Test
+    public void testAmountException() {
+        try {
+            validate("a", 2);
+            assertTrue(false); //In case an exception isn't thrown
+        } catch (InvalidRegExException e) {
+            assertTrue(false);
+        } catch (InvalidAmountOfResultsException e) {
+            assertTrue(true);
+        }
+    }
+
+    @Test
+    public void testOpenSetWithoutCloseException() {
+        try {
+            validate("[abc.", 1);
+            assertTrue(false); //In case an exception isn't thrown
+        } catch (InvalidRegExException e) {
+            assertTrue(true);
+        } catch (InvalidAmountOfResultsException e) {
+            assertTrue(false);
+        }
+    }
+
+    @Test
+    public void testQuantifiersTogether() {
+        try {
+            validate("ab+*", 1);
+            assertTrue(false); //In case an exception isn't thrown
+        } catch (InvalidRegExException e) {
+            assertTrue(true);
+        } catch (InvalidAmountOfResultsException e) {
+            assertTrue(false);
+        }
+    }
+
+    @Test
+    public void testOnlyQuantifier() {
+        try {
+            validate("+", 1);
+            assertTrue(false); //In case an exception isn't thrown
+        } catch (InvalidRegExException e) {
+            assertTrue(true);
+        } catch (InvalidAmountOfResultsException e) {
+            assertTrue(false);
+        }
+    }
+
 //    @Test
 //    public void testEmptySet() {
 //        try {
@@ -193,6 +235,31 @@ public class RegExGeneratorTest {
 //            assertTrue(false);
 //        }
 //    }
-
-    //"ab*.+\\[\\+\\*[cde]?.[fg]"
+//
+//    @Test
+//    public void testQuantifierUnescapedInSet() {
+//        try {
+//            assertTrue(validate("a[bc*]d", 1));
+//        } catch (InvalidRegExException | InvalidAmountOfResultsException e) {
+//            assertTrue(false);
+//        }
+//    }
+//
+//    @Test
+//    public void testEscapedCharactersInSet() {
+//        try {
+//            assertTrue(validate("a[bc\\*\\@]d", 1));
+//        } catch (InvalidRegExException | InvalidAmountOfResultsException e) {
+//            assertTrue(false);
+//        }
+//    }
+//
+//    @Test
+//    public void testClosedBracketWithoutBeingOpened() {
+//        try {
+//            assertTrue(validate("ab]c", 1));
+//        } catch (InvalidRegExException | InvalidAmountOfResultsException e) {
+//            assertTrue(false);
+//        }
+//    }
 }

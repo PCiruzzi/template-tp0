@@ -28,11 +28,9 @@ public class RegExParser {
         }
         return parsed;
     }
-    //TODO: Exception when there are 2 quantifiers together (Without being escaped, at least the first one)
     //TODO: Exception when there is a quantifier non-escaped inside a set
     //TODO: Exception when there is a closing set square bracket, without being opened
     //TODO: Exception when there is an empty set
-    //TODO: Exception when there is only a quantifier
     //TODO: Allow escaped characters inside a set
     //This method doesn't allow that a '\]' is in the set
     private int readSet(Queue<String> parsed, String regEx, int index) throws InvalidRegExException {
@@ -47,7 +45,10 @@ public class RegExParser {
         return readFromAndTo(parsed, regEx, index, index + 2);
     }
 
-    private int readLiteral(Queue<String> parsed, String regEx, int index) {
+    private int readLiteral(Queue<String> parsed, String regEx, int index) throws InvalidRegExException {
+        if (isQuantifier(regEx.charAt(index))) {
+            throw new InvalidRegExException("A RegEx 'field' cannot begin with a quantifier.");
+        }
         return readFromAndTo(parsed, regEx, index, index + 1);
     }
 
