@@ -14,5 +14,5 @@ public final class Constants {
     public static final int MIN_LITERAL = 0;
     public static final int MAX_LITERAL = 255;
 
-    public static final int DEFAULT_RESULTS = 30;
+    public static final int DEFAULT_RESULTS = 15;
 }

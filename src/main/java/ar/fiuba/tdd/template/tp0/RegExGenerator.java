@@ -11,21 +11,22 @@ public class RegExGenerator {
         this.maxLength = maxLength;
     }
 
-    public List<String> generate(String regEx, int numberOfResults) throws InvalidRegExException {
+    public List<String> generate(String regEx, int numberOfResults) throws InvalidRegExException, InvalidAmountOfResultsException {
         Queue<String> parsed = new RegExParser().parse(regEx);
-        for (String parseado : parsed) { //TODO: Clean
-            System.out.println("Parseado: " + parseado);
-        }
-
-
         List<String> results = new ArrayList<>();
         int index = 0;
+        int amountOfSameResults = 0;
         while (index < numberOfResults) {
             String result = this.generateRandom(parsed);
             if (! results.contains(result) && results.add(result) ) {
                 index++;
+                amountOfSameResults = 0;
+            } else {
+                amountOfSameResults++;
             }
-            //TODO: If it repeats n times, it means that there are no much possibilities
+            if (amountOfSameResults >= 20) {
+                throw new InvalidAmountOfResultsException("There were generated 20 results and they all had been the same.");
+            }
             System.out.println("Resultado: " + result);
         }
         return results;

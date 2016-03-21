@@ -21,17 +21,20 @@ public class RandomGenerator {
         for (String regExField : this.regEx) {
             // It generates a random field of the regex of maximum size such that the next fields have space to
             // complete the regex (Having space to fill its field with at least 1 character).
-            System.out.println("Generando field: " + regExField); //TODO: Clean
-            matcher = matcher.concat(generateRandomField(regExField, maxLength - regEx.size() + fieldsCount));
+            int maxFieldLength = maxLength - matcher.length() - regEx.size() + fieldsCount;
+            System.out.println("");
+            System.out.println("Generating field: " + regExField); //TODO: Clean
+            System.out.println("maxFieldLength: " + maxFieldLength);
+            matcher = matcher.concat(generateRandomField(regExField, maxFieldLength));
             fieldsCount++;
         }
         return matcher;
     }
 
     private String generateRandomField(String regExField, int maxLength) {
-        char first = regExField.charAt(0);
-        int amountOfRepetitions = amountOfRepetitions(regExField.charAt(regExField.length() - 1), maxLength);
+        int amountOfRepetitions = amountOfRepetitions(regExField, maxLength);
         System.out.println("Amount of repetitions: " + amountOfRepetitions); //TODO: Clean
+        char first = regExField.charAt(0);
         if (first == OPEN_SET) {
             return generateRandomFieldSet(regExField, amountOfRepetitions);
         } else if (first == ESCAPED) {
@@ -65,28 +68,41 @@ public class RandomGenerator {
         for (int index = 0; index < amountOfRepetitions; index++) {
             generated = generated.concat(character);
         }
-        System.out.println("Escaped/literal field: " + unEscaped); //TODO: Clean
+        System.out.println("Escaped/literal field: " + generated); //TODO: Clean
         return generated;
     }
 
     private String generateRandomFieldLiteral(String regExField, int amountOfRepetitions) {
         String literal = charToString(regExField.charAt(0));
-        System.out.println("Literal: " + literal); //TODO: Clean
         if (! literal.equals(".")) {
             return generateRandomFieldEscaped(regExField, amountOfRepetitions);
         } else {
-            String generated = "";
-            for (int index = 0; index < amountOfRepetitions; index++) {
-                char randomChar = (char) randomBetween(MIN_LITERAL, MAX_LITERAL);
-                String toConcatenate = charToString(randomChar);
-                generated = generated.concat(toConcatenate);
-            }
+            String generated = generateDot(amountOfRepetitions);
             System.out.println("Literal field: " + generated); //TODO: Clean
             return generated;
+//            return generateDot(amountOfRepetitions);
         }
     }
 
-    private int amountOfRepetitions(char last, int maxLength) {
+    private String generateDot(int amountOfRepetitions) {
+        String generated = "";
+        for (int index = 0; index < amountOfRepetitions; index++) {
+            int randomInt = randomBetween(MIN_LITERAL, MAX_LITERAL);
+            System.out.println("RandomInt: " + randomInt); //TODO: Clean
+            // Excludes line feed and carriage return characters
+            if (randomInt == 10 || randomInt == 13 || randomInt == 133) {
+                index--;
+                continue;
+            }
+            char randomChar = (char) randomInt;
+            String toConcatenate = charToString(randomChar);
+            generated = generated.concat(toConcatenate);
+        }
+        return generated;
+    }
+
+    private int amountOfRepetitions(String regExField, int maxLength) {
+        char last = getLast(regExField);
         switch (last) {
             case ZERO_OR_ONE: {
                 return randomBetween(0, 1);
@@ -101,6 +117,25 @@ public class RandomGenerator {
                 return 1;
             }
         }
+    }
+
+    private char getLast(String regExField) {
+        char last;
+        if (isQuantifierEscaped(regExField) && regExField.length() == 2) {
+            last = '\\'; // Anything but a quantifier
+        } else {
+            last = regExField.charAt(regExField.length() - 1);
+        }
+        return last;
+    }
+
+    private boolean isQuantifierEscaped(String regExField) {
+        if (regExField.length() == 1) {
+            return false;
+        }
+        char escapedChar = regExField.charAt(1);
+        return (regExField.charAt(0) == ESCAPED
+                && (escapedChar == ZERO_OR_ONE || escapedChar == ZERO_OR_MORE || escapedChar == ONE_OR_MORE));
     }
 
     private boolean hasQuantifier(String regExField) {

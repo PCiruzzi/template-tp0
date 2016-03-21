@@ -16,7 +16,6 @@ public class RegExParser {
 
     public Queue<String> parse(String regEx) throws InvalidRegExException {
         Queue<String> parsed = new LinkedList<>();
-
         for (int index = 0; index < regEx.length(); index++) {
             char character = regEx.charAt(index);
             if (character == OPEN_SET) {
@@ -27,18 +26,21 @@ public class RegExParser {
                 index = readLiteral(parsed, regEx, index);
             }
         }
-
         return parsed;
     }
-    //TODO: Exception when there are 2 quantifiers together
+    //TODO: Exception when there are 2 quantifiers together (Without being escaped, at least the first one)
     //TODO: Exception when there is a quantifier non-escaped inside a set
+    //TODO: Exception when there is a closing set square bracket, without being opened
+    //TODO: Exception when there is an empty set
+    //TODO: Exception when there is only a quantifier
+    //TODO: Allow escaped characters inside a set
     //This method doesn't allow that a '\]' is in the set
     private int readSet(Queue<String> parsed, String regEx, int index) throws InvalidRegExException {
         int indexOfSquareBracket = regEx.indexOf(CLOSE_SET, index);
         if (indexOfSquareBracket == -1) {
             throw new InvalidRegExException("The RegEx has open a set and it's never been closed.");
         }
-        return readFromAndTo(parsed, regEx, index, indexOfSquareBracket);
+        return readFromAndTo(parsed, regEx, index, indexOfSquareBracket + 1);
     }
 
     private int readEscaped(Queue<String> parsed, String regEx, int index) {
@@ -51,7 +53,10 @@ public class RegExParser {
 
     private int readFromAndTo(Queue<String> parsed, String regEx, int from, int to) {
         String regExField = regEx.substring(from, to);
-        char possibleQuantifier = regEx.charAt(to - 1);
+        char possibleQuantifier = ' ';
+        if (to < regEx.length()) {
+            possibleQuantifier = regEx.charAt(to);
+        }
         if (isQuantifier(possibleQuantifier)) {
             regExField += possibleQuantifier;
         } else {
@@ -61,6 +66,3 @@ public class RegExParser {
         return to;
     }
 }
-
-
-// ab*.+\h\+[cde]?.[fg] -> a b* .+ \h \+ [cde]? . [fg]
