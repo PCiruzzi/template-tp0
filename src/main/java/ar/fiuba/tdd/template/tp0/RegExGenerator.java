@@ -27,7 +27,6 @@ public class RegExGenerator {
             if (amountOfSameResults >= 20) {
                 throw new InvalidAmountOfResultsException("There were generated 20 results and they all had been the same.");
             }
-            System.out.println("Resultado: " + result);
         }
         return results;
     }

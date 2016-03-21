@@ -22,9 +22,6 @@ public class RandomGenerator {
             // It generates a random field of the regex of maximum size such that the next fields have space to
             // complete the regex (Having space to fill its field with at least 1 character).
             int maxFieldLength = maxLength - matcher.length() - regEx.size() + fieldsCount;
-            System.out.println("");
-            System.out.println("Generating field: " + regExField); //TODO: Clean
-            System.out.println("maxFieldLength: " + maxFieldLength);
             matcher = matcher.concat(generateRandomField(regExField, maxFieldLength));
             fieldsCount++;
         }
@@ -33,7 +30,6 @@ public class RandomGenerator {
 
     private String generateRandomField(String regExField, int maxLength) throws InvalidRegExException {
         int amountOfRepetitions = amountOfRepetitions(regExField, maxLength);
-        System.out.println("Amount of repetitions: " + amountOfRepetitions); //TODO: Clean
         char first = regExField.charAt(0);
         if (first == OPEN_SET) {
             return generateRandomFieldSet(regExField, amountOfRepetitions);
@@ -57,7 +53,6 @@ public class RandomGenerator {
             String toConcatenate = charToString(randomChar);
             generated = generated.concat(toConcatenate);
         }
-        System.out.println("Set field: " + generated); //TODO: Clean
         return generated;
     }
 
@@ -68,7 +63,6 @@ public class RandomGenerator {
         for (int index = 0; index < amountOfRepetitions; index++) {
             generated = generated.concat(character);
         }
-        System.out.println("Escaped/literal field: " + generated); //TODO: Clean
         return generated;
     }
 
@@ -77,10 +71,7 @@ public class RandomGenerator {
         if (! literal.equals(".")) {
             return generateRandomFieldEscaped(regExField, amountOfRepetitions);
         } else {
-            String generated = generateDot(amountOfRepetitions);
-            System.out.println("Literal field: " + generated); //TODO: Clean
-            return generated;
-//            return generateDot(amountOfRepetitions);
+            return generateDot(amountOfRepetitions);
         }
     }
 

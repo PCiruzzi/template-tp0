@@ -8,7 +8,6 @@ import java.util.regex.Pattern;
 
 import static ar.fiuba.tdd.template.tp0.Constants.*;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class RegExGeneratorTest {
@@ -259,13 +258,4 @@ public class RegExGeneratorTest {
             assertTrue(false);
         }
     }
-
-//    @Test
-//    public void testClosedBracketWithoutBeingOpened() {
-//        try {
-//            assertTrue(validate("ab]c", 1));
-//        } catch (InvalidRegExException | InvalidAmountOfResultsException e) {
-//            assertTrue(false);
-//        }
-//    }
 }
